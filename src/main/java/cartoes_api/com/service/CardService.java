@@ -15,26 +15,26 @@ import java.util.UUID;
 @Service
 public class CardService {
 
-    public ClientResponse getEligibleCards(ClienteRequest.Cliente clientCards) {
+    public ClientResponse getEligibleCards(ClienteRequest.Cliente clientCards)
+    {
 
-        calculateAge(clientCards);
+        int age = calculateAge(clientCards);
 
-//        if (clientCards.getAge() < 18) {
-//            throw new IdadeInvalidaException("O cliente deve ter 18 anos ou mais para solicitar um cartão.");
-//        }
+        if (age < 18) {
+            throw new IdadeInvalidaException();
+        }
 
         List<ClientResponse.CartaoOfertado> eligibleCards = new ArrayList<>();
 
-        if (clientCards.getAge() > 18 && clientCards.getAge() < 25) {
+        if (age > 18 && age < 25) {
             eligibleCards.add(createCardOffer(CardType.CARTAO_SEM_ANUIDADE));
-            return new ClientResponse(UUID.randomUUID(), LocalDate.now().atStartOfDay(), clientCards, eligibleCards);
         }
 
         if ("SP".equalsIgnoreCase(clientCards.uf)) {
             eligibleCards.add(createCardOffer(CardType.CARTAO_SEM_ANUIDADE));
             eligibleCards.add(createCardOffer(CardType.CARTAO_COM_CASHBACK));
 
-            if (clientCards.getAge() > 25 && clientCards.getAge() < 30) {
+            if (age> 25 && age < 30) {
                 eligibleCards.add(createCardOffer(CardType.CARTAO_DE_PARCEIROS));
             }
         }
@@ -47,28 +47,30 @@ public class CardService {
         double valorLimiteDisponivel = 0.0;
         String status = "APROVADO";
 
-        switch (cardType) {
-            case CARTAO_SEM_ANUIDADE:
+        valorLimiteDisponivel = switch (cardType) {
+            case CARTAO_SEM_ANUIDADE -> {
                 valorAnuidadeMensal = 0.00;
-                valorLimiteDisponivel = 1000.00;
-                break;
-            case CARTAO_COM_CASHBACK:
+                yield 1000.00;
+            }
+            case CARTAO_COM_CASHBACK -> {
                 valorAnuidadeMensal = 0.00;
-                valorLimiteDisponivel = 5000.00;
-                break;
-            case CARTAO_DE_PARCEIROS:
+                yield 5000.00;
+            }
+            case CARTAO_DE_PARCEIROS -> {
                 valorAnuidadeMensal = 20.00;
-                valorLimiteDisponivel = 5000.00;
-                break;
-        }
+                yield 5000.00;
+            }
+        };
 
         return new ClientResponse.CartaoOfertado(cardType, valorAnuidadeMensal, valorLimiteDisponivel, status);
     }
 
-    private void calculateAge(ClienteRequest.Cliente clientCards) {
-        if (clientCards.birthDate != null) {
-            long years = ChronoUnit.YEARS.between(clientCards.getBirthDate(), LocalDate.now());
-            clientCards.setAge((int) years);
+
+    private int calculateAge(ClienteRequest.Cliente clientCards) {
+        if (clientCards.getBirthDate() != null) {
+            return (int) ChronoUnit.YEARS.between(clientCards.getBirthDate(), LocalDate.now());
         }
+        return 0;
     }
+
 }

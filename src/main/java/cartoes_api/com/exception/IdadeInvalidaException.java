@@ -6,15 +6,4 @@ public class IdadeInvalidaException extends RuntimeException {
         super("A idade do cliente deve ser maior ou igual a 18 anos.");
     }
 
-    public IdadeInvalidaException(String message) {
-        super(message);
-    }
-
-    public IdadeInvalidaException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IdadeInvalidaException(Throwable cause) {
-        super(cause);
-    }
 }

@@ -1,5 +1,8 @@
 package cartoes_api.com.controller.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,7 +13,7 @@ public class ClienteRequest {
 
    private Cliente cliente;
 
-    public ClienteRequest(Cliente cliente) {
+    public ClienteRequest() {
         this.cliente = cliente;
     }
 
@@ -24,13 +27,29 @@ public class ClienteRequest {
 
     @Data
     public static class Cliente {
+        @NotBlank(message = "O nome não pode ser vazio.")
         public String name;
+
+        @NotBlank(message = "O CPF não pode ser vazio.")
         public String cpf;
+
+        @NotNull(message = "A idade não pode ser nula.")
         public int age;
+
+        @NotNull(message = "A data de nascimento é obrigatória.")
         public LocalDate birthDate;
+
+        @NotBlank(message = "O estado (UF) não pode ser vazio.")
         public String uf;
+
+        @NotNull(message = "O pagamento mensal não pode ser nulo.")
+        @PositiveOrZero(message = "O valor do pagamento mensal não pode ser negativo.")
         public BigDecimal monthPayment;
+
+        @NotBlank(message = "O e-mail não pode ser vazio.")
         public String email;
+
+        @NotBlank(message = "O telefone não pode ser vazio.")
         public String phone;
 
         public Cliente(String name, String cpf, int age, LocalDate birthDate, String uf, BigDecimal monthPayment, String email, String phone) {
@@ -42,6 +61,10 @@ public class ClienteRequest {
             this.monthPayment = monthPayment;
             this.email = email;
             this.phone = phone;
+        }
+
+        public Cliente() {
+
         }
 
         public String getName() {

@@ -1,60 +1,32 @@
 package cartoes_api.com.controller.dto;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 public class ErrorResponse {
 
-    private LocalDateTime timestamp;
-    private int status;
-    private String error;
-    private String message;
-    private String path;
+    private String codigo;
+    private String mensagem;
+    private DetalheErro detalheErro;
 
-    public ErrorResponse(int status, String error, String message, String path) {
-        this.timestamp = LocalDateTime.now();
-        this.status = status;
-        this.error = error;
-        this.message = message;
-        this.path = path;
+    public ErrorResponse(String codigo, String mensagem, DetalheErro detalheErro) {
+        this.codigo = codigo;
+        this.mensagem = mensagem;
+        this.detalheErro = detalheErro;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
+    @Data
+    public static class DetalheErro {
+        private String app;
+        private String tipoErro;
+        private String mensagemInterna;
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
+        public DetalheErro(String app, String tipoErro, String mensagemInterna) {
+            this.app = app;
+            this.tipoErro = tipoErro;
+            this.mensagemInterna = mensagemInterna;
+        }
     }
 }
